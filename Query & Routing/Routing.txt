@@ -1,0 +1,50 @@
+http://localhost:8080/menus				            (GET)		// View All menus availalble
+http://localhost:8080/menus/(inputProductID)		(GET)		// View Single menu availalble
+http://localhost:8080/menus				            (POST)		// Add new menu
+http://localhost:8080/menus/(inputProductID)		(PUT)		// Update availalble menu
+http://localhost:8080/menus/(inputProductID)		(DELETE)	// Delete availalble menu
+
+Format untuk POST dan PUT products
+{
+     "menuname": "Nasi Kucing",
+     "harga": 2000,
+     "stock": 22,
+     "category": "1"
+ }
+
+
+http://localhost:8080/categorymenus				            (GET)		// View All categorymenus availalble
+http://localhost:8080/categorymenus/(inputcategorymenusID)	(GET)		// View Single categorymenu availalble
+http://localhost:8080/categorymenus			            	(POST)		// Add new categorymenu
+http://localhost:8080/categorymenus/(inputcategorymenusID)	(PUT)		// Update availalble categorymenu
+http://localhost:8080/categorymenus/(inputcategorymenusID)	(DELETE) 	// Delete availalble categorymenu
+
+Format untuk POST dan PUT category
+{
+    "categoryname": "Minuman"
+}
+
+
+http://localhost:8080/transaction/today                 (GET) 		// View report transaction by today
+http://localhost:8080/transaction			            (GET) 		// View All Transaction 
+http://localhost:8080/transaction/(inputTransactionID)	(GET) 		// View single Transaction
+http://localhost:8080/transaction		            	(POST) 		// Add new Transaction
+http://localhost:8080/transaction/(inputTransactionID)	(PUT) 		// Update Transaction
+http://localhost:8080/transaction/(inputTransactionID)	(DELETE) 	// Delete availalble Transaction
+
+Format untuk POST dan PUT Transaction
+{
+    "peralatanmakan": 2000,
+    "solditems": [
+        {
+            "productid": "1",
+            "quantity": 2,
+            "ekstrapedas":1500
+        },
+        {
+            "productid": "2",
+            "quantity": 1,
+            "ekstrapedas":1500
+        }
+    ]
+}
