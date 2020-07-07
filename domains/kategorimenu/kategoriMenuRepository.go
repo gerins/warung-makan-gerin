@@ -120,19 +120,12 @@ func (p KategoriMenuRepo) HandleUPDATEKategoriMenu(id string, data KategoriMenu)
 	}
 
 	tx.Commit()
-	checkAvaibility, err := p.HandleGETKategoriMenu(id, "A")
-	if err != nil {
-		return nil, err
-	}
-	return checkAvaibility, nil
+
+	return p.HandleGETKategoriMenu(id, "A")
 }
 
 // HandleDELETEKategoriMenu for DELETE single data from KategoriMenu
 func (p KategoriMenuRepo) HandleDELETEKategoriMenu(id string) (*KategoriMenu, error) {
-	if _, err := p.HandleGETKategoriMenu(id, "A"); err != nil {
-		return nil, err
-	}
-
 	tx, err := p.db.Begin()
 	if err != nil {
 		log.Println(err)

@@ -78,6 +78,10 @@ func (s KategoriMenuService) HandleDELETEKategoriMenu(id string) (*KategoriMenu,
 		return nil, err
 	}
 
+	if _, err := p.HandleGETKategoriMenu(id, "A"); err != nil {
+		return nil, err
+	}
+
 	result, err := s.KategoriMenuRepo.HandleDELETEKategoriMenu(id)
 	if err != nil {
 		return result, err
