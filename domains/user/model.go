@@ -9,3 +9,8 @@ type User struct {
 	Created  string `json:"created"`
 	Updated  string `json:"updated"`
 }
+
+type TokenUser struct {
+	Token string
+	User  User
+}

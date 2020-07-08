@@ -17,7 +17,7 @@ type UserService struct {
 
 type UserServiceInterface interface {
 	GetUsers() (*[]User, error)
-	HandleUserLogin(userLogin User) (*string, error)
+	HandleUserLogin(userLogin User) (*TokenUser, error)
 	HandleRegisterNewUser(d User) (*User, error)
 	HandleUPDATEUser(id string, data User) (*User, error)
 	HandleDELETEUser(id string) (*User, error)
@@ -36,7 +36,7 @@ func (s UserService) GetUsers() (*[]User, error) {
 	return User, nil
 }
 
-func (s UserService) HandleUserLogin(userLogin User) (*string, error) {
+func (s UserService) HandleUserLogin(userLogin User) (*TokenUser, error) {
 	if err := validator.Validate(userLogin); err != nil {
 		return nil, err
 	}
@@ -51,8 +51,11 @@ func (s UserService) HandleUserLogin(userLogin User) (*string, error) {
 		return nil, errors.New("Username atau Password salah")
 	}
 
-	getToken := token.GenerateToken(User.Username, 20)
-	return &getToken, nil
+	getToken := token.GenerateToken(User.Username, 120)
+	userWithToken := TokenUser{getToken, *User}
+
+	return &userWithToken, nil
+
 }
 
 func (s UserService) HandleRegisterNewUser(d User) (*User, error) {

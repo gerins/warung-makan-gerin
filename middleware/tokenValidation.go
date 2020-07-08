@@ -2,31 +2,25 @@ package middleware
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"warung_makan_gerin/utils/token"
 )
 
 func TokenValidation(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		getToken, err := r.Cookie("token")
-		if err != nil {
-			log.Println(err.Error())
-			http.Error(w, err.Error(), http.StatusUnauthorized)
-			return
-		}
+		getCookies := r.Cookies()
 
-		if len(getToken.Value) == 0 {
+		if len(getCookies[0].Value) == 0 {
 			http.Error(w, "Invalid Token", http.StatusUnauthorized)
 			return
 		}
 
-		validity, userName, _ := token.VerifyToken(getToken.Value)
+		validity, userName, _ := token.VerifyToken(getCookies[0].Value)
 		fmt.Println(r.RequestURI + ` Accessed by ` + userName)
-		if validity == true {
+		if validity == true && userName == getCookies[1].Value {
 			next.ServeHTTP(w, r)
 		} else {
-			http.Error(w, "Token Expired", http.StatusUnauthorized)
+			http.Error(w, "Invalid Sessions", http.StatusUnauthorized)
 		}
 	})
 }

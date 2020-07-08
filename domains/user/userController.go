@@ -40,23 +40,29 @@ func (s *Controller) HandleUserLogin() func(w http.ResponseWriter, r *http.Reque
 		userLogin.Username = r.FormValue("username")
 		userLogin.Password = r.FormValue("password")
 
-		token, err := s.UserService.HandleUserLogin(userLogin)
+		userWithToken, err := s.UserService.HandleUserLogin(userLogin)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(message.Respone("Login Failed", http.StatusBadRequest, err.Error()))
 			return
 		}
 
-		// w.WriteHeader(http.StatusOK)
-
 		http.SetCookie(w, &http.Cookie{
 			Name:    "token",
-			Value:   *token,
+			Value:   userWithToken.Token,
 			Path:    "/",
 			Expires: time.Now().Add(120 * time.Second),
 		})
 
-		json.NewEncoder(w).Encode(message.Respone("Login Success", http.StatusOK, token))
+		http.SetCookie(w, &http.Cookie{
+			Name:    "username",
+			Value:   userWithToken.User.Username,
+			Path:    "/",
+			Expires: time.Now().Add(120 * time.Second),
+		})
+
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(message.Respone("Login Success", http.StatusOK, userWithToken))
 	}
 }
 
