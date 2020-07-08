@@ -3,6 +3,7 @@ package user
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"warung_makan_gerin/utils/message"
 	"warung_makan_gerin/utils/tools"
@@ -97,5 +98,48 @@ func (s *Controller) HandleDELETEUsers() func(w http.ResponseWriter, r *http.Req
 		}
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(message.Respone("Delete By ID Success", http.StatusOK, result))
+	}
+}
+
+func (s *Controller) LoginPage() func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+
+		fmt.Fprint(w, `
+		<html lang="en">
+		  <head>
+			<meta charset="UTF-8" />
+			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+			<title>User Login</title>
+		  </head>
+		  <body>
+			<h1>User Login</h1>
+			<form action="">
+			  <label for="inputUsername">Username</label>
+			  <input
+				required
+				maxlength="16"
+				minlength="4"
+				name="user"
+				type="text"
+				id="inputUsername"
+				placeholder="Username"
+			  />
+			  <label for="inputPassword">Password</label>
+			  <input
+				required
+				maxlength="16"
+				minlength="4"
+				name="password"
+				type="password"
+				id="inputPassword"
+				placeholder="Password"
+			  />
+			  <button type="submit">Login</button>
+			</form>
+		  </body>
+		</html>
+		
+		`)
 	}
 }

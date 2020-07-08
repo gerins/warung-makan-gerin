@@ -3,6 +3,7 @@ package user
 import (
 	"database/sql"
 	"errors"
+	"warung_makan_gerin/utils/token"
 	"warung_makan_gerin/utils/validation"
 
 	"golang.org/x/crypto/bcrypt"
@@ -50,6 +51,8 @@ func (s UserService) HandleUserLogin(userLogin User) (*User, error) {
 		return nil, errors.New("Username atau Password salah")
 	}
 
+	getToken := token.GenerateToken(User.Username, 3600)
+	User.Password = getToken
 	return User, nil
 }
 
