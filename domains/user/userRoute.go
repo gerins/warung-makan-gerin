@@ -1,4 +1,4 @@
-package menu
+package user
 
 import (
 	"database/sql"

@@ -1,4 +1,4 @@
-package menu
+package user
 
 import (
 	"database/sql"
@@ -7,50 +7,50 @@ import (
 	"gopkg.in/validator.v2"
 )
 
-type MenuService struct {
+type UserService struct {
 	db       *sql.DB
-	MenuRepo MenuRepository
+	UserRepo UserRepository
 }
 
-type MenuServiceInterface interface {
-	GetMenus() (*[]Menu, error)
-	GetMenuByID(id string) (*Menu, error)
-	HandlePOSTMenu(d Menu) (*Menu, error)
-	HandleUPDATEMenu(id string, data Menu) (*Menu, error)
-	HandleDELETEMenu(id string) (*Menu, error)
+type UserServiceInterface interface {
+	GetUsers() (*[]User, error)
+	GetUserByID(id string) (*User, error)
+	HandlePOSTUser(d User) (*User, error)
+	HandleUPDATEUser(id string, data User) (*User, error)
+	HandleDELETEUser(id string) (*User, error)
 }
 
-func NewMenuService(db *sql.DB) MenuServiceInterface {
-	return MenuService{db, NewMenuRepo(db)}
+func NewUserService(db *sql.DB) UserServiceInterface {
+	return UserService{db, NewUserRepo(db)}
 }
 
-func (s MenuService) GetMenus() (*[]Menu, error) {
-	Menu, err := s.MenuRepo.HandleGETAllMenu()
+func (s UserService) GetUsers() (*[]User, error) {
+	User, err := s.UserRepo.HandleGETAllUser()
 	if err != nil {
 		return nil, err
 	}
 
-	return Menu, nil
+	return User, nil
 }
 
-func (s MenuService) GetMenuByID(id string) (*Menu, error) {
+func (s UserService) GetUserByID(id string) (*User, error) {
 	if err := validation.ValidateInputNumber(id); err != nil {
 		return nil, err
 	}
 
-	Menu, err := s.MenuRepo.HandleGETMenu(id, "A")
+	User, err := s.UserRepo.HandleGETUser(id, "A")
 	if err != nil {
 		return nil, err
 	}
-	return Menu, nil
+	return User, nil
 }
 
-func (s MenuService) HandlePOSTMenu(d Menu) (*Menu, error) {
+func (s UserService) HandlePOSTUser(d User) (*User, error) {
 	if err := validator.Validate(d); err != nil {
 		return nil, err
 	}
 
-	result, err := s.MenuRepo.HandlePOSTMenu(d)
+	result, err := s.UserRepo.HandlePOSTUser(d)
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +58,7 @@ func (s MenuService) HandlePOSTMenu(d Menu) (*Menu, error) {
 	return result, nil
 }
 
-func (s MenuService) HandleUPDATEMenu(id string, data Menu) (*Menu, error) {
+func (s UserService) HandleUPDATEUser(id string, data User) (*User, error) {
 	if err := validator.Validate(data); err != nil {
 		return nil, err
 	}
@@ -67,24 +67,24 @@ func (s MenuService) HandleUPDATEMenu(id string, data Menu) (*Menu, error) {
 		return nil, err
 	}
 
-	result, err := s.MenuRepo.HandleUPDATEMenu(id, data)
+	result, err := s.UserRepo.HandleUPDATEUser(id, data)
 	if err != nil {
 		return nil, err
 	}
 	return result, nil
 }
 
-func (s MenuService) HandleDELETEMenu(id string) (*Menu, error) {
+func (s UserService) HandleDELETEUser(id string) (*User, error) {
 	if err := validation.ValidateInputNumber(id); err != nil {
 		return nil, err
 	}
 
-	_, err := s.MenuRepo.HandleGETMenu(id, "A")
+	_, err := s.UserRepo.HandleGETUser(id, "A")
 	if err != nil {
 		return nil, err
 	}
 
-	result, err := s.MenuRepo.HandleDELETEMenu(id)
+	result, err := s.UserRepo.HandleDELETEUser(id)
 	if err != nil {
 		return result, err
 	}

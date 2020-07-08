@@ -1,4 +1,4 @@
-package menu
+package user
 
 import (
 	"database/sql"
@@ -7,71 +7,69 @@ import (
 	"strconv"
 )
 
-type MenuRepo struct {
+type UserRepo struct {
 	db *sql.DB
 }
 
-type MenuRepository interface {
-	HandleGETAllMenu() (*[]Menu, error)
-	HandleGETMenu(id, status string) (*Menu, error)
-	HandlePOSTMenu(d Menu) (*Menu, error)
-	HandleUPDATEMenu(id string, data Menu) (*Menu, error)
-	HandleDELETEMenu(id string) (*Menu, error)
+type UserRepository interface {
+	HandleGETAllUser() (*[]User, error)
+	HandleGETUser(id, status string) (*User, error)
+	HandlePOSTUser(d User) (*User, error)
+	HandleUPDATEUser(id string, data User) (*User, error)
+	HandleDELETEUser(id string) (*User, error)
 }
 
-func NewMenuRepo(db *sql.DB) MenuRepository {
-	return MenuRepo{db}
+func NewUserRepo(db *sql.DB) UserRepository {
+	return UserRepo{db}
 }
 
-// HandleGETAllMenu for GET all data from Menu
-func (p MenuRepo) HandleGETAllMenu() (*[]Menu, error) {
-	var d Menu
-	var AllMenu []Menu
+// HandleGETAllUser for GET all data from User
+func (p UserRepo) HandleGETAllUser() (*[]User, error) {
+	var d User
+	var AllUser []User
 
-	result, err := p.db.Query("SELECT * FROM menu_idx WHERE status=?", "A")
+	result, err := p.db.Query("SELECT * FROM user WHERE status=?", "A")
 	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
 
 	for result.Next() {
-		err := result.Scan(&d.ID, &d.MenuName, &d.Harga, &d.Stock, &d.Category,
-			&d.Status, &d.Created, &d.Updated)
+		err := result.Scan(&d.ID, &d.Username, &d.Password, &d.Status, &d.Created, &d.Updated)
 		if err != nil {
 			log.Println(err)
 			return nil, err
 		}
-		AllMenu = append(AllMenu, d)
+		AllUser = append(AllUser, d)
 	}
-	return &AllMenu, nil
+	return &AllUser, nil
 }
 
-// HandleGETMenu for GET single data from Menu
-func (p MenuRepo) HandleGETMenu(id, status string) (*Menu, error) {
-	results := p.db.QueryRow("SELECT * FROM menu_idx WHERE id=? AND status=?", id, status)
+// HandleGETUser for GET single data from User
+func (p UserRepo) HandleGETUser(id, status string) (*User, error) {
+	results := p.db.QueryRow("SELECT * FROM user WHERE id=? AND status=?", id, status)
 
-	var d Menu
-	err := results.Scan(&d.ID, &d.MenuName, &d.Harga, &d.Stock, &d.Category,
-		&d.Status, &d.Created, &d.Updated)
+	var d User
+	err := results.Scan(&d.ID, &d.Username, &d.Password, &d.Status, &d.Created, &d.Updated)
 	if err != nil {
-		return nil, errors.New("Menu ID Not Found")
+		return nil, errors.New("User ID Not Found")
 	}
 
 	return &d, nil
 }
 
-// HandlePOSTMenu will POST a new Menu data
-func (p MenuRepo) HandlePOSTMenu(d Menu) (*Menu, error) {
+// HandlePOSTUser will POST a new User data
+func (p UserRepo) HandlePOSTUser(d User) (*User, error) {
 	tx, err := p.db.Begin()
 	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
 
-	stmnt, _ := tx.Prepare(`INSERT INTO menu(nama,harga,stock,category_menu_id) VALUES (?,?,?,?)`)
+	stmnt, _ := tx.Prepare(`INSERT INTO user(username,password) VALUES (?,?)`)
 	defer stmnt.Close()
 
-	result, err := stmnt.Exec(d.MenuName, d.Harga, d.Stock, d.Category)
+	result, err := stmnt.Exec(d.Username, d.Password)
 	if err != nil {
 		log.Println(err)
 		tx.Rollback()
@@ -80,20 +78,19 @@ func (p MenuRepo) HandlePOSTMenu(d Menu) (*Menu, error) {
 
 	lastInsertID, _ := result.LastInsertId()
 	tx.Commit()
-	return p.HandleGETMenu(strconv.Itoa(int(lastInsertID)), "A")
+	return p.HandleGETUser(strconv.Itoa(int(lastInsertID)), "A")
 }
 
-// HandleUPDATEMenu is used for UPDATE data Menu
-func (p MenuRepo) HandleUPDATEMenu(id string, data Menu) (*Menu, error) {
+// HandleUPDATEUser is used for UPDATE data User
+func (p UserRepo) HandleUPDATEUser(id string, data User) (*User, error) {
 	tx, err := p.db.Begin()
 	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
 
-	_, err = tx.Exec(`UPDATE menu SET nama=?, harga=?,stock=?,category_menu_id=? WHERE id=?`,
-		data.MenuName, data.Harga, data.Stock, data.Category, id)
-
+	_, err = tx.Exec(`UPDATE User SET username=?, password=? WHERE id=?`,
+		data.Username, data.Password)
 	if err != nil {
 		log.Println(err)
 		tx.Rollback()
@@ -102,18 +99,18 @@ func (p MenuRepo) HandleUPDATEMenu(id string, data Menu) (*Menu, error) {
 
 	tx.Commit()
 
-	return p.HandleGETMenu(id, "A")
+	return p.HandleGETUser(id, "A")
 }
 
-// HandleDELETEMenu for DELETE single data from Menu
-func (p MenuRepo) HandleDELETEMenu(id string) (*Menu, error) {
+// HandleDELETEUser for DELETE single data from User
+func (p UserRepo) HandleDELETEUser(id string) (*User, error) {
 	tx, err := p.db.Begin()
 	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
 
-	_, err = tx.Exec("UPDATE menu SET status=? WHERE id=?", "NA", id)
+	_, err = tx.Exec("UPDATE User SET status=? WHERE id=?", "NA", id)
 	if err != nil {
 		log.Println(err)
 		tx.Rollback()
@@ -121,5 +118,5 @@ func (p MenuRepo) HandleDELETEMenu(id string) (*Menu, error) {
 	}
 	tx.Commit()
 
-	return p.HandleGETMenu(id, "NA")
+	return p.HandleGETUser(id, "NA")
 }
