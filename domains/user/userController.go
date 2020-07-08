@@ -50,14 +50,14 @@ func (s *Controller) HandleUserLogin() func(w http.ResponseWriter, r *http.Reque
 	}
 }
 
-func (s *Controller) HandlePOSTUsers() func(w http.ResponseWriter, r *http.Request) {
+func (s *Controller) HandleRegisterNewUser() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
 		var data User
 		tools.Parser(r, &data)
 
-		result, err := s.UserService.HandlePOSTUser(data)
+		result, err := s.UserService.HandleRegisterNewUser(data)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(message.Respone("Posting Failed", http.StatusBadRequest, err.Error()))

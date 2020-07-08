@@ -17,7 +17,7 @@ type UserService struct {
 type UserServiceInterface interface {
 	GetUsers() (*[]User, error)
 	HandleUserLogin(userLogin User) (*User, error)
-	HandlePOSTUser(d User) (*User, error)
+	HandleRegisterNewUser(d User) (*User, error)
 	HandleUPDATEUser(id string, data User) (*User, error)
 	HandleDELETEUser(id string) (*User, error)
 }
@@ -53,7 +53,7 @@ func (s UserService) HandleUserLogin(userLogin User) (*User, error) {
 	return User, nil
 }
 
-func (s UserService) HandlePOSTUser(d User) (*User, error) {
+func (s UserService) HandleRegisterNewUser(d User) (*User, error) {
 	if err := validator.Validate(d); err != nil {
 		return nil, err
 	}

@@ -52,7 +52,7 @@ func (p UserRepo) HandleUserLogin(username, status string) (*User, error) {
 	var d User
 	err := results.Scan(&d.ID, &d.Username, &d.Password, &d.Status, &d.Created, &d.Updated)
 	if err != nil {
-		return nil, errors.New("User ID Not Found")
+		return nil, errors.New("Username atau Password salah")
 	}
 
 	return &d, nil
