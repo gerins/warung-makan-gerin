@@ -6,12 +6,12 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func InitMenuRoute(mainRoute string, db *sql.DB, r *mux.Router) {
-	MenuController := NewController(db)
+func InitUserRoute(mainRoute string, db *sql.DB, r *mux.Router) {
+	UserController := NewController(db)
 	p := r.PathPrefix(mainRoute).Subrouter()
-	p.HandleFunc("", MenuController.HandleGETAllMenus()).Methods("GET")
-	p.HandleFunc("/{id}", MenuController.HandleGETMenu()).Methods("GET")
-	p.HandleFunc("", MenuController.HandlePOSTMenus()).Methods("POST")
-	p.HandleFunc("/{id}", MenuController.HandleUPDATEMenus()).Methods("PUT")
-	p.HandleFunc("/{id}", MenuController.HandleDELETEMenus()).Methods("DELETE")
+	p.HandleFunc("", UserController.HandleGETAllUsers()).Methods("GET")
+	p.HandleFunc("/{id}", UserController.HandleGETUser()).Methods("GET")
+	p.HandleFunc("", UserController.HandlePOSTUsers()).Methods("POST")
+	p.HandleFunc("/{id}", UserController.HandleUPDATEUsers()).Methods("PUT")
+	p.HandleFunc("/{id}", UserController.HandleDELETEUsers()).Methods("DELETE")
 }

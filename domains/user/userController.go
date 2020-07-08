@@ -1,4 +1,4 @@
-package menu
+package user
 
 import (
 	"database/sql"
@@ -9,51 +9,51 @@ import (
 )
 
 type Controller struct {
-	MenuService MenuServiceInterface
+	UserService UserServiceInterface
 }
 
 func NewController(db *sql.DB) *Controller {
-	return &Controller{MenuService: NewMenuService(db)}
+	return &Controller{UserService: NewUserService(db)}
 }
 
-func (s *Controller) HandleGETAllMenus() func(w http.ResponseWriter, r *http.Request) {
+func (s *Controller) HandleGETAllUsers() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
-		Menus, err := s.MenuService.GetMenus()
+		Users, err := s.UserService.GetUsers()
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(message.Respone("Search All Failed", http.StatusBadRequest, err.Error()))
 			return
 		}
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(message.Respone("Search All Success", http.StatusOK, Menus))
+		json.NewEncoder(w).Encode(message.Respone("Search All Success", http.StatusOK, Users))
 	}
 }
 
-func (s *Controller) HandleGETMenu() func(w http.ResponseWriter, r *http.Request) {
+func (s *Controller) HandleGETUser() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
-		Menu, err := s.MenuService.GetMenuByID(tools.GetPathVar("id", r))
+		User, err := s.UserService.GetUserByID(tools.GetPathVar("id", r))
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(message.Respone("Search by ID Failed", http.StatusBadRequest, err.Error()))
 			return
 		}
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(message.Respone("Search by ID Success", http.StatusOK, Menu))
+		json.NewEncoder(w).Encode(message.Respone("Search by ID Success", http.StatusOK, User))
 	}
 }
 
-func (s *Controller) HandlePOSTMenus() func(w http.ResponseWriter, r *http.Request) {
+func (s *Controller) HandlePOSTUsers() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
-		var data Menu
+		var data User
 		tools.Parser(r, &data)
 
-		result, err := s.MenuService.HandlePOSTMenu(data)
+		result, err := s.UserService.HandlePOSTUser(data)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(message.Respone("Posting Failed", http.StatusBadRequest, err.Error()))
@@ -64,13 +64,13 @@ func (s *Controller) HandlePOSTMenus() func(w http.ResponseWriter, r *http.Reque
 	}
 }
 
-func (s *Controller) HandleUPDATEMenus() func(w http.ResponseWriter, r *http.Request) {
+func (s *Controller) HandleUPDATEUsers() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		var data Menu
+		var data User
 		tools.Parser(r, &data)
 
-		result, err := s.MenuService.HandleUPDATEMenu(tools.GetPathVar("id", r), data)
+		result, err := s.UserService.HandleUPDATEUser(tools.GetPathVar("id", r), data)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(message.Respone("Update Failed", http.StatusBadRequest, err.Error()))
@@ -81,11 +81,11 @@ func (s *Controller) HandleUPDATEMenus() func(w http.ResponseWriter, r *http.Req
 	}
 }
 
-func (s *Controller) HandleDELETEMenus() func(w http.ResponseWriter, r *http.Request) {
+func (s *Controller) HandleDELETEUsers() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
-		result, err := s.MenuService.HandleDELETEMenu(tools.GetPathVar("id", r))
+		result, err := s.UserService.HandleDELETEUser(tools.GetPathVar("id", r))
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(message.Respone("Delete By ID Failed", http.StatusBadRequest, err.Error()))
