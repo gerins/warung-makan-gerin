@@ -8,6 +8,7 @@ import (
 )
 
 type KategoriMenuService struct {
+	db               *sql.DB
 	KategoriMenuRepo KategoriMenuRepository
 }
 
@@ -20,7 +21,7 @@ type KategoriMenuServiceInterface interface {
 }
 
 func NewKategoriMenuService(db *sql.DB) KategoriMenuServiceInterface {
-	return KategoriMenuService{NewKategoriMenuRepo(db)}
+	return KategoriMenuService{db, NewKategoriMenuRepo(db)}
 }
 
 func (s KategoriMenuService) GetKategoriMenus() (*[]KategoriMenu, error) {

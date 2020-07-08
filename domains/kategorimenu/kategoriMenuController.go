@@ -9,14 +9,11 @@ import (
 )
 
 type Controller struct {
-	db                  *sql.DB
 	KategoriMenuService KategoriMenuServiceInterface
 }
 
 func NewController(db *sql.DB) *Controller {
-	return &Controller{
-		db:                  db,
-		KategoriMenuService: NewKategoriMenuService(db)}
+	return &Controller{KategoriMenuService: NewKategoriMenuService(db)}
 }
 
 func (s *Controller) HandleGETAllKategoriMenus() func(w http.ResponseWriter, r *http.Request) {

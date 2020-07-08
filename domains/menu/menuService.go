@@ -8,6 +8,7 @@ import (
 )
 
 type MenuService struct {
+	db       *sql.DB
 	MenuRepo MenuRepository
 }
 
@@ -20,7 +21,7 @@ type MenuServiceInterface interface {
 }
 
 func NewMenuService(db *sql.DB) MenuServiceInterface {
-	return MenuService{NewMenuRepo(db)}
+	return MenuService{db, NewMenuRepo(db)}
 }
 
 func (s MenuService) GetMenus() (*[]Menu, error) {

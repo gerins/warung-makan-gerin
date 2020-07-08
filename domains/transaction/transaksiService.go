@@ -3,7 +3,6 @@ package transaction
 import (
 	"database/sql"
 	"errors"
-	"warung_makan_gerin/config/database"
 	"warung_makan_gerin/domains/menu"
 	"warung_makan_gerin/utils/validation"
 
@@ -11,6 +10,7 @@ import (
 )
 
 type TransactionService struct {
+	db              *sql.DB
 	TransactionRepo TransactionRepository
 }
 
@@ -24,7 +24,7 @@ type TransactionServiceInterface interface {
 }
 
 func NewTransactionService(db *sql.DB) TransactionServiceInterface {
-	return TransactionService{NewTransactionRepo(db)}
+	return TransactionService{db, NewTransactionRepo(db)}
 }
 
 func (s TransactionService) GetTransactions() (*[]Transaction, error) {
@@ -49,15 +49,12 @@ func (s TransactionService) GetTransactionByID(id string) (*Transaction, error) 
 }
 
 func (s TransactionService) HandlePOSTTransaction(d Transaction) (*Transaction, error) {
-	db := database.ConnectDB()
-	defer db.Close()
-
 	for _, value := range d.SoldItems {
 		if err := validator.Validate(value); err != nil {
 			return nil, err
 		}
 
-		result, err := menu.NewMenuRepo(db).HandleGETMenu(value.ProductID, "A")
+		result, err := menu.NewMenuRepo(s.db).HandleGETMenu(value.ProductID, "A")
 		if err != nil {
 			return nil, err
 		}

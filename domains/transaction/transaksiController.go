@@ -9,14 +9,11 @@ import (
 )
 
 type Controller struct {
-	db                 *sql.DB
 	TransactionService TransactionServiceInterface
 }
 
 func NewController(db *sql.DB) *Controller {
-	return &Controller{
-		db:                 db,
-		TransactionService: NewTransactionService(db)}
+	return &Controller{TransactionService: NewTransactionService(db)}
 }
 
 func (s *Controller) HandleGETAllTransactions() func(w http.ResponseWriter, r *http.Request) {
