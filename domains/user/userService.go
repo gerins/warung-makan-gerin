@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"warung_makan_gerin/utils/validation"
 
+	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/validator.v2"
 )
 
@@ -49,6 +50,12 @@ func (s UserService) HandlePOSTUser(d User) (*User, error) {
 	if err := validator.Validate(d); err != nil {
 		return nil, err
 	}
+
+	hash, err := bcrypt.GenerateFromPassword([]byte(d.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, err
+	}
+	d.Password = string(hash)
 
 	result, err := s.UserRepo.HandlePOSTUser(d)
 	if err != nil {
