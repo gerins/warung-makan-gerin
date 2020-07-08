@@ -2,21 +2,26 @@ package middleware
 
 import (
 	"fmt"
+	"log"
 	"net/http"
-	"strings"
 	"warung_makan_gerin/utils/token"
 )
 
 func TokenValidation(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		tokens := r.Header.Get("Authorization")
+		getToken, err := r.Cookie("token")
+		if err != nil {
+			log.Println(err.Error())
+			http.Error(w, err.Error(), http.StatusUnauthorized)
+			return
+		}
 
-		if len(tokens) == 0 {
+		if len(getToken.Value) == 0 {
 			http.Error(w, "Invalid Token", http.StatusUnauthorized)
 			return
 		}
 
-		validity, userName, _ := token.VerifyToken(strings.Split(tokens, " ")[1])
+		validity, userName, _ := token.VerifyToken(getToken.Value)
 		fmt.Println(r.RequestURI + ` Accessed by ` + userName)
 		if validity == true {
 			next.ServeHTTP(w, r)
