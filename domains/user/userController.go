@@ -31,18 +31,22 @@ func (s *Controller) HandleGETAllUsers() func(w http.ResponseWriter, r *http.Req
 	}
 }
 
-func (s *Controller) HandleGETUser() func(w http.ResponseWriter, r *http.Request) {
+func (s *Controller) HandleUserLogin() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
-		User, err := s.UserService.GetUserByID(tools.GetPathVar("id", r))
+		var userLogin User
+		userLogin.Username = tools.GetPathVar("user", r)
+		userLogin.Password = tools.GetPathVar("password", r)
+
+		User, err := s.UserService.HandleUserLogin(userLogin)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(message.Respone("Search by ID Failed", http.StatusBadRequest, err.Error()))
+			json.NewEncoder(w).Encode(message.Respone("Login Failed", http.StatusBadRequest, err.Error()))
 			return
 		}
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(message.Respone("Search by ID Success", http.StatusOK, User))
+		json.NewEncoder(w).Encode(message.Respone("Login Success", http.StatusOK, User))
 	}
 }
 

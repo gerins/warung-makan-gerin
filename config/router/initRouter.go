@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
-	"os/user"
 	"warung_makan_gerin/domains/kategorimenu"
 	"warung_makan_gerin/domains/menu"
 	"warung_makan_gerin/domains/transaction"

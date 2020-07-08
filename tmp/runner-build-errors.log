@@ -1,0 +1,2 @@
+# warung_makan_gerin/domains/user
+domains\user\userController.go:42:29: s.UserService.handleUserLogin undefined (type UserServiceInterface has no field or method handleUserLogin)

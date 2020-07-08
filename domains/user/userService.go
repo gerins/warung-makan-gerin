@@ -2,6 +2,7 @@ package user
 
 import (
 	"database/sql"
+	"errors"
 	"warung_makan_gerin/utils/validation"
 
 	"golang.org/x/crypto/bcrypt"
@@ -15,7 +16,7 @@ type UserService struct {
 
 type UserServiceInterface interface {
 	GetUsers() (*[]User, error)
-	GetUserByID(id string) (*User, error)
+	HandleUserLogin(userLogin User) (*User, error)
 	HandlePOSTUser(d User) (*User, error)
 	HandleUPDATEUser(id string, data User) (*User, error)
 	HandleDELETEUser(id string) (*User, error)
@@ -34,15 +35,21 @@ func (s UserService) GetUsers() (*[]User, error) {
 	return User, nil
 }
 
-func (s UserService) GetUserByID(id string) (*User, error) {
-	if err := validation.ValidateInputNumber(id); err != nil {
+func (s UserService) HandleUserLogin(userLogin User) (*User, error) {
+	if err := validator.Validate(userLogin); err != nil {
 		return nil, err
 	}
 
-	User, err := s.UserRepo.HandleGETUser(id, "A")
+	User, err := s.UserRepo.HandleUserLogin(userLogin.Username, "A")
 	if err != nil {
 		return nil, err
 	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(User.Password), []byte(userLogin.Password))
+	if err != nil {
+		return nil, errors.New("Username atau Password salah")
+	}
+
 	return User, nil
 }
 
@@ -86,7 +93,7 @@ func (s UserService) HandleDELETEUser(id string) (*User, error) {
 		return nil, err
 	}
 
-	_, err := s.UserRepo.HandleGETUser(id, "A")
+	_, err := s.UserRepo.HandleUserLogin(id, "A")
 	if err != nil {
 		return nil, err
 	}

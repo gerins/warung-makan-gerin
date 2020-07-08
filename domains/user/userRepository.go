@@ -13,7 +13,7 @@ type UserRepo struct {
 
 type UserRepository interface {
 	HandleGETAllUser() (*[]User, error)
-	HandleGETUser(id, status string) (*User, error)
+	HandleUserLogin(username, status string) (*User, error)
 	HandlePOSTUser(d User) (*User, error)
 	HandleUPDATEUser(id string, data User) (*User, error)
 	HandleDELETEUser(id string) (*User, error)
@@ -45,9 +45,9 @@ func (p UserRepo) HandleGETAllUser() (*[]User, error) {
 	return &AllUser, nil
 }
 
-// HandleGETUser for GET single data from User
-func (p UserRepo) HandleGETUser(id, status string) (*User, error) {
-	results := p.db.QueryRow("SELECT * FROM user WHERE id=? AND status=?", id, status)
+// HandleUserLogin for GET single data from User
+func (p UserRepo) HandleUserLogin(username, status string) (*User, error) {
+	results := p.db.QueryRow("SELECT * FROM user WHERE username=? AND status=?", username, status)
 
 	var d User
 	err := results.Scan(&d.ID, &d.Username, &d.Password, &d.Status, &d.Created, &d.Updated)
@@ -78,7 +78,7 @@ func (p UserRepo) HandlePOSTUser(d User) (*User, error) {
 
 	lastInsertID, _ := result.LastInsertId()
 	tx.Commit()
-	return p.HandleGETUser(strconv.Itoa(int(lastInsertID)), "A")
+	return p.HandleUserLogin(strconv.Itoa(int(lastInsertID)), "A")
 }
 
 // HandleUPDATEUser is used for UPDATE data User
@@ -99,7 +99,7 @@ func (p UserRepo) HandleUPDATEUser(id string, data User) (*User, error) {
 
 	tx.Commit()
 
-	return p.HandleGETUser(id, "A")
+	return p.HandleUserLogin(id, "A")
 }
 
 // HandleDELETEUser for DELETE single data from User
@@ -118,5 +118,5 @@ func (p UserRepo) HandleDELETEUser(id string) (*User, error) {
 	}
 	tx.Commit()
 
-	return p.HandleGETUser(id, "NA")
+	return p.HandleUserLogin(id, "NA")
 }
