@@ -115,3 +115,25 @@ func (s *Controller) HandleDELETEUsers() func(w http.ResponseWriter, r *http.Req
 		json.NewEncoder(w).Encode(message.Respone("Delete By ID Success", http.StatusOK, result))
 	}
 }
+
+func (s *Controller) UserLogOut() func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+
+		http.SetCookie(w, &http.Cookie{
+			Name:    "token",
+			Value:   "token",
+			Path:    "/",
+			Expires: time.Now().Add(1 * time.Second),
+		})
+
+		http.SetCookie(w, &http.Cookie{
+			Name:    "username",
+			Value:   "username",
+			Path:    "/",
+			Expires: time.Now().Add(1 * time.Second),
+		})
+
+		w.WriteHeader(http.StatusOK)
+	}
+}

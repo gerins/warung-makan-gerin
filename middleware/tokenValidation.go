@@ -9,8 +9,7 @@ import (
 func TokenValidation(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		getCookies := r.Cookies()
-
-		if len(getCookies[0].Value) == 0 {
+		if len(getCookies) == 0 {
 			http.Error(w, "Invalid Token", http.StatusUnauthorized)
 			return
 		}
