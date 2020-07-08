@@ -60,11 +60,11 @@ func (s *Controller) HandleRegisterNewUser() func(w http.ResponseWriter, r *http
 		result, err := s.UserService.HandleRegisterNewUser(data)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(message.Respone("Posting Failed", http.StatusBadRequest, err.Error()))
+			json.NewEncoder(w).Encode(message.Respone("Register Failed", http.StatusBadRequest, err.Error()))
 			return
 		}
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(message.Respone("Posting Success", http.StatusOK, result))
+		json.NewEncoder(w).Encode(message.Respone("Register Success", http.StatusOK, "Selamat Datang "+result.Username))
 	}
 }
 

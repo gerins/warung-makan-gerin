@@ -58,6 +58,11 @@ func (s UserService) HandleRegisterNewUser(d User) (*User, error) {
 		return nil, err
 	}
 
+	_, err := s.UserRepo.HandleUserLogin(d.Username, "A")
+	if err == nil {
+		return nil, errors.New("Username sudah digunakan")
+	}
+
 	hash, err := bcrypt.GenerateFromPassword([]byte(d.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, err
@@ -73,6 +78,7 @@ func (s UserService) HandleRegisterNewUser(d User) (*User, error) {
 }
 
 func (s UserService) HandleUPDATEUser(id string, data User) (*User, error) {
+	return nil, errors.New("Under Construction")
 	if err := validator.Validate(data); err != nil {
 		return nil, err
 	}
@@ -89,6 +95,7 @@ func (s UserService) HandleUPDATEUser(id string, data User) (*User, error) {
 }
 
 func (s UserService) HandleDELETEUser(id string) (*User, error) {
+	return nil, errors.New("Under Construction")
 	if err := validation.ValidateInputNumber(id); err != nil {
 		return nil, err
 	}

@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	"log"
-	"strconv"
 )
 
 type UserRepo struct {
@@ -69,16 +68,15 @@ func (p UserRepo) HandlePOSTUser(d User) (*User, error) {
 	stmnt, _ := tx.Prepare(`INSERT INTO user(username,password) VALUES (?,?)`)
 	defer stmnt.Close()
 
-	result, err := stmnt.Exec(d.Username, d.Password)
+	_, err = stmnt.Exec(d.Username, d.Password)
 	if err != nil {
 		log.Println(err)
 		tx.Rollback()
 		return nil, err
 	}
 
-	lastInsertID, _ := result.LastInsertId()
 	tx.Commit()
-	return p.HandleUserLogin(strconv.Itoa(int(lastInsertID)), "A")
+	return &d, nil
 }
 
 // HandleUPDATEUser is used for UPDATE data User
