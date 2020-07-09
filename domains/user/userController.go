@@ -61,8 +61,9 @@ func (s *Controller) HandleUserLogin() func(w http.ResponseWriter, r *http.Reque
 			Expires: time.Now().Add(120 * time.Second),
 		})
 
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(message.Respone("Login Success", http.StatusOK, userWithToken))
+		http.Redirect(w, r, "/transaction", http.StatusSeeOther)
+		return
+		// json.NewEncoder(w).Encode(message.Respone("Login Success", http.StatusOK, userWithToken))
 	}
 }
 

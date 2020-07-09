@@ -9,8 +9,9 @@ import (
 func TokenValidation(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		getCookies := r.Cookies()
+		fmt.Println(getCookies)
 		if len(getCookies) == 0 {
-			http.Error(w, "Invalid Token", http.StatusUnauthorized)
+			http.Redirect(w, r, "127.0.0.1:5500/index.html", http.StatusMovedPermanently)
 			return
 		}
 
