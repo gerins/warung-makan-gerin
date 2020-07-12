@@ -55,7 +55,6 @@ func (s UserService) HandleUserLogin(userLogin User) (*TokenUser, error) {
 	userWithToken := TokenUser{getToken, *User}
 
 	return &userWithToken, nil
-
 }
 
 func (s UserService) HandleRegisterNewUser(d User) (*User, error) {

@@ -48,3 +48,11 @@ Format untuk POST dan PUT Transaction
         }
     ]
 }
+
+
+http://localhost:8080/user              (GET) // see all user
+http://localhost:8080/user/register     (POST)
+{
+    "username": "valdy",
+    "password": "bandung"
+}
