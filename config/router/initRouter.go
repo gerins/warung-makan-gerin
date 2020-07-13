@@ -7,6 +7,7 @@ import (
 	"warung_makan_gerin/domains/kategorimenu"
 	"warung_makan_gerin/domains/menu"
 	"warung_makan_gerin/domains/transaction"
+	"warung_makan_gerin/domains/user"
 
 	"github.com/gorilla/mux"
 )
@@ -15,6 +16,7 @@ const (
 	MENUS_MAIN_ROUTE       = "/menus"
 	CATEGORY_MAIN_ROUTE    = "/categorymenus"
 	TRANSACTION_MAIN_ROUTE = "/transaction"
+	USER_MAIN_ROUTE        = "/user"
 )
 
 type ConfigRouter struct {
@@ -26,6 +28,7 @@ func (ar *ConfigRouter) InitRouter() {
 	menu.InitMenuRoute(MENUS_MAIN_ROUTE, ar.DB, ar.Router)
 	kategorimenu.InitKategoriMenuRoute(CATEGORY_MAIN_ROUTE, ar.DB, ar.Router)
 	transaction.InitTransactionRoute(TRANSACTION_MAIN_ROUTE, ar.DB, ar.Router)
+	user.InitUserRoute(USER_MAIN_ROUTE, ar.DB, ar.Router)
 	ar.Router.NotFoundHandler = http.HandlerFunc(notFound)
 }
 

@@ -1,6 +1,6 @@
 package menu
 
-// Product Struct
+// Menu Struct
 type Menu struct {
 	ID       string `json:"id"`
 	MenuName string `json:"menuname" validate:"nonzero"`

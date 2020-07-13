@@ -58,6 +58,7 @@ func (s TransactionService) HandlePOSTTransaction(d Transaction) (*Transaction, 
 		if err != nil {
 			return nil, err
 		}
+
 		if result.Stock == 0 {
 			return nil, errors.New(result.MenuName + " Sementara Kosong")
 		}
