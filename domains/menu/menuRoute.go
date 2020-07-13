@@ -2,6 +2,7 @@ package menu
 
 import (
 	"database/sql"
+	"warung_makan_gerin/middleware"
 
 	"github.com/gorilla/mux"
 )
@@ -9,6 +10,7 @@ import (
 func InitMenuRoute(mainRoute string, db *sql.DB, r *mux.Router) {
 	MenuController := NewController(db)
 	p := r.PathPrefix(mainRoute).Subrouter()
+	p.Use(middleware.TokenValidation)
 	p.HandleFunc("", MenuController.HandleGETAllMenus()).Methods("GET")
 	p.HandleFunc("/{id}", MenuController.HandleGETMenu()).Methods("GET")
 	p.HandleFunc("", MenuController.HandlePOSTMenus()).Methods("POST")
