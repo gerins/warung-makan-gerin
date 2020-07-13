@@ -49,6 +49,21 @@ func (s *Controller) HandleUserLogin() func(w http.ResponseWriter, r *http.Reque
 
 		http.SetCookie(w, &http.Cookie{
 			Name:     "token",
+			Value:    "token",
+			Path:     "/",
+			Expires:  time.Now().Add(0 * time.Second),
+			HttpOnly: true,
+		})
+
+		http.SetCookie(w, &http.Cookie{
+			Name:    "username",
+			Value:   "username",
+			Path:    "/",
+			Expires: time.Now().Add(0 * time.Second),
+		})
+
+		http.SetCookie(w, &http.Cookie{
+			Name:     "token",
 			Value:    userWithToken.Token,
 			Path:     "/",
 			Expires:  time.Now().Add(120 * time.Second),
