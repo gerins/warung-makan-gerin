@@ -3,6 +3,7 @@ package user
 import (
 	"database/sql"
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 	"warung_makan_gerin/utils/message"
@@ -37,47 +38,51 @@ func (s *Controller) HandleUserLogin() func(w http.ResponseWriter, r *http.Reque
 		w.Header().Set("Content-Type", "application/json")
 
 		var userLogin User
-		userLogin.Username = r.FormValue("username")
-		userLogin.Password = r.FormValue("password")
+		err := json.NewDecoder(r.Body).Decode(&userLogin)
+		log.Print(userLogin.Username)
+		log.Print(userLogin.Password)
 
 		userWithToken, err := s.UserService.HandleUserLogin(userLogin)
 		if err != nil {
+			log.Print(`gagal login`)
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(message.Respone("Login Failed", http.StatusBadRequest, err.Error()))
 			return
 		}
 
-		http.SetCookie(w, &http.Cookie{
-			Name:     "token",
-			Value:    "token",
-			Path:     "/",
-			Expires:  time.Now().Add(0 * time.Second),
-			HttpOnly: true,
-		})
+		// http.SetCookie(w, &http.Cookie{
+		// 	Name:     "token",
+		// 	Value:    "token",
+		// 	Path:     "/",
+		// 	Expires:  time.Now().Add(0 * time.Second),
+		// 	HttpOnly: true,
+		// })
 
-		http.SetCookie(w, &http.Cookie{
-			Name:    "username",
-			Value:   "username",
-			Path:    "/",
-			Expires: time.Now().Add(0 * time.Second),
-		})
+		// http.SetCookie(w, &http.Cookie{
+		// 	Name:    "username",
+		// 	Value:   "username",
+		// 	Path:    "/",
+		// 	Expires: time.Now().Add(0 * time.Second),
+		// })
 
-		http.SetCookie(w, &http.Cookie{
-			Name:     "token",
-			Value:    userWithToken.Token,
-			Path:     "/",
-			Expires:  time.Now().Add(120 * time.Second),
-			HttpOnly: true,
-		})
+		// http.SetCookie(w, &http.Cookie{
+		// 	Name:     "token",
+		// 	Value:    userWithToken.Token,
+		// 	Path:     "/",
+		// 	Expires:  time.Now().Add(120 * time.Second),
+		// 	HttpOnly: true,
+		// })
 
-		http.SetCookie(w, &http.Cookie{
-			Name:    "username",
-			Value:   userWithToken.User.Username,
-			Path:    "/",
-			Expires: time.Now().Add(120 * time.Second),
-		})
+		// http.SetCookie(w, &http.Cookie{
+		// 	Name:    "username",
+		// 	Value:   userWithToken.User.Username,
+		// 	Path:    "/",
+		// 	Expires: time.Now().Add(120 * time.Second),
+		// })
 
-		http.Redirect(w, r, "/transaction", http.StatusSeeOther)
+		log.Print(`Success Login`)
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(message.Respone("Login Success", http.StatusOK, userWithToken))
 		return
 	}
 }

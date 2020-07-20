@@ -12,7 +12,7 @@ type MenuRepo struct {
 }
 
 type MenuRepository interface {
-	HandleGETAllMenu() (*[]Menu, error)
+	HandleGETAllMenu(offset, limit string) (*[]Menu, error)
 	HandleGETMenu(id, status string) (*Menu, error)
 	HandlePOSTMenu(d Menu) (*Menu, error)
 	HandleUPDATEMenu(id string, data Menu) (*Menu, error)
@@ -24,11 +24,11 @@ func NewMenuRepo(db *sql.DB) MenuRepository {
 }
 
 // HandleGETAllMenu for GET all data from Menu
-func (p MenuRepo) HandleGETAllMenu() (*[]Menu, error) {
+func (p MenuRepo) HandleGETAllMenu(offset, limit string) (*[]Menu, error) {
 	var d Menu
 	var AllMenu []Menu
 
-	result, err := p.db.Query("SELECT * FROM menu_idx WHERE status=?", "A")
+	result, err := p.db.Query("SELECT * FROM menu_idx WHERE status=? LIMIT ?, ?", "A", offset, limit)
 	if err != nil {
 		log.Println(err)
 		return nil, err

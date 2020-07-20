@@ -2,7 +2,6 @@ package transaction
 
 import (
 	"database/sql"
-	"warung_makan_gerin/middleware"
 
 	"github.com/gorilla/mux"
 )
@@ -10,7 +9,7 @@ import (
 func InitTransactionRoute(mainRoute string, db *sql.DB, r *mux.Router) {
 	TransactionController := NewController(db)
 	p := r.PathPrefix(mainRoute).Subrouter()
-	p.Use(middleware.TokenValidation)
+	// p.Use(middleware.TokenValidation)
 	p.HandleFunc("", TransactionController.HandleGETAllTransactions()).Methods("GET")
 	p.HandleFunc("/today", TransactionController.GetTransactionsDaily()).Methods("GET")
 	p.HandleFunc("/{id}", TransactionController.HandleGETTransaction()).Methods("GET")

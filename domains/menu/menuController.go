@@ -20,7 +20,10 @@ func (s *Controller) HandleGETAllMenus() func(w http.ResponseWriter, r *http.Req
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
-		Menus, err := s.MenuService.GetMenus()
+		var page string = tools.GetPathVar("page", r)
+		var limit string = tools.GetPathVar("limit", r)
+
+		Menus, err := s.MenuService.GetMenus(page, limit)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(message.Respone("Search All Failed", http.StatusBadRequest, err.Error()))
