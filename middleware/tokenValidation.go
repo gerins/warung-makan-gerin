@@ -6,6 +6,7 @@ import (
 	"warung_makan_gerin/utils/token"
 )
 
+// Validate Token from cookies
 func TokenValidation(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		getCookies := r.Cookies()
