@@ -3,6 +3,7 @@ package menu
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"warung_makan_gerin/utils/message"
 	"warung_makan_gerin/utils/tools"
@@ -22,8 +23,12 @@ func (s *Controller) HandleGETAllMenus() func(w http.ResponseWriter, r *http.Req
 
 		var page string = tools.GetPathVar("page", r)
 		var limit string = tools.GetPathVar("limit", r)
+		var status string = tools.GetPathVar("status", r)
+		var orderBy string = tools.GetPathVar("orderBy", r)
+		var sort string = tools.GetPathVar("sort", r)
+		var keyword string = tools.GetPathVar("keyword", r)
 
-		Menus, err := s.MenuService.GetMenus(page, limit)
+		Menus, err := s.MenuService.GetMenus(keyword, page, limit, status, orderBy, sort)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(message.Respone("Search All Failed", http.StatusBadRequest, err.Error()))
@@ -55,6 +60,8 @@ func (s *Controller) HandlePOSTMenus() func(w http.ResponseWriter, r *http.Reque
 
 		var data Menu
 		tools.Parser(r, &data)
+
+		fmt.Println(data)
 
 		result, err := s.MenuService.HandlePOSTMenu(data)
 		if err != nil {

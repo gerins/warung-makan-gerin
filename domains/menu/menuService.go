@@ -13,7 +13,7 @@ type MenuService struct {
 }
 
 type MenuServiceInterface interface {
-	GetMenus(offset, limit string) (*[]Menu, error)
+	GetMenus(keyword, offset, limit, status, orderBy, sort string) (*[]Menu, error)
 	GetMenuByID(id string) (*Menu, error)
 	HandlePOSTMenu(d Menu) (*Menu, error)
 	HandleUPDATEMenu(id string, data Menu) (*Menu, error)
@@ -24,8 +24,8 @@ func NewMenuService(db *sql.DB) MenuServiceInterface {
 	return MenuService{db, NewMenuRepo(db)}
 }
 
-func (s MenuService) GetMenus(offset, limit string) (*[]Menu, error) {
-	Menu, err := s.MenuRepo.HandleGETAllMenu(offset, limit)
+func (s MenuService) GetMenus(keyword, offset, limit, status, orderBy, sort string) (*[]Menu, error) {
+	Menu, err := s.MenuRepo.HandleGETAllMenu(keyword, offset, limit, status, orderBy, sort)
 	if err != nil {
 		return nil, err
 	}

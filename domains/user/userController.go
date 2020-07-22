@@ -39,8 +39,8 @@ func (s *Controller) HandleUserLogin() func(w http.ResponseWriter, r *http.Reque
 
 		var userLogin User
 		err := json.NewDecoder(r.Body).Decode(&userLogin)
-		log.Print(userLogin.Username)
-		log.Print(userLogin.Password)
+		log.Print(`username -> `, userLogin.Username)
+		log.Print(`password -> `, userLogin.Password)
 
 		userWithToken, err := s.UserService.HandleUserLogin(userLogin)
 		if err != nil {

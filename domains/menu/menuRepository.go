@@ -3,6 +3,7 @@ package menu
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"log"
 	"strconv"
 )
@@ -12,7 +13,7 @@ type MenuRepo struct {
 }
 
 type MenuRepository interface {
-	HandleGETAllMenu(offset, limit string) (*[]Menu, error)
+	HandleGETAllMenu(keyword, offset, limit, status, orderBy, sort string) (*[]Menu, error)
 	HandleGETMenu(id, status string) (*Menu, error)
 	HandlePOSTMenu(d Menu) (*Menu, error)
 	HandleUPDATEMenu(id string, data Menu) (*Menu, error)
@@ -24,11 +25,12 @@ func NewMenuRepo(db *sql.DB) MenuRepository {
 }
 
 // HandleGETAllMenu for GET all data from Menu
-func (p MenuRepo) HandleGETAllMenu(offset, limit string) (*[]Menu, error) {
+func (p MenuRepo) HandleGETAllMenu(keyword, offset, limit, status, orderBy, sort string) (*[]Menu, error) {
 	var d Menu
 	var AllMenu []Menu
 
-	result, err := p.db.Query("SELECT * FROM menu_idx WHERE status=? LIMIT ?, ?", "A", offset, limit)
+	queryInput := fmt.Sprintf("SELECT * FROM menu_idx WHERE status=? AND nama LIKE ? ORDER BY %s %s LIMIT %s,%s", orderBy, sort, offset, limit)
+	result, err := p.db.Query(queryInput, status, "%"+keyword+"%")
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -91,8 +93,8 @@ func (p MenuRepo) HandleUPDATEMenu(id string, data Menu) (*Menu, error) {
 		return nil, err
 	}
 
-	_, err = tx.Exec(`UPDATE menu SET nama=?, harga=?,stock=?,category_menu_id=? WHERE id=?`,
-		data.MenuName, data.Harga, data.Stock, data.Category, id)
+	_, err = tx.Exec(`UPDATE menu SET nama=?, harga=?,stock=? WHERE id=?`,
+		data.MenuName, data.Harga, data.Stock, id)
 
 	if err != nil {
 		log.Println(err)
