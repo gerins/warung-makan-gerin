@@ -11,3 +11,9 @@ type Menu struct {
 	Created  string `json:"created"`
 	Updated  string `json:"updated"`
 }
+
+// TotalMenu Struct
+type TotalMenu struct {
+	TotalItem int    `json:"totalitem"`
+	Menu      []Menu `json:"menu"`
+}

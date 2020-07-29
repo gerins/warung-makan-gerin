@@ -3,3 +3,5 @@ tmp/runner-build.exe
 tmp/runner-build-errors.log
 tmp/runner-build.exe
 app.exe
+tmp/runner-build.exe
+tmp/runner-build.exe~

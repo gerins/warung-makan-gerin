@@ -29,8 +29,8 @@ func (p MenuRepo) HandleGETAllMenu(keyword, offset, limit, status, orderBy, sort
 	var d Menu
 	var AllMenu []Menu
 
-	queryInput := fmt.Sprintf("SELECT * FROM menu_idx WHERE status=? AND nama LIKE ? ORDER BY %s %s LIMIT %s,%s", orderBy, sort, offset, limit)
-	result, err := p.db.Query(queryInput, status, "%"+keyword+"%")
+	queryInput := fmt.Sprintf("SELECT * FROM menu_idx WHERE status=? AND (nama LIKE ? OR jenis LIKE ?) ORDER BY %s %s LIMIT %s,%s", orderBy, sort, offset, limit)
+	result, err := p.db.Query(queryInput, status, "%"+keyword+"%", "%"+keyword+"%")
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -45,6 +45,18 @@ func (p MenuRepo) HandleGETAllMenu(keyword, offset, limit, status, orderBy, sort
 		}
 		AllMenu = append(AllMenu, d)
 	}
+
+	// resultTotalItem := p.db.QueryRow(`SELECT count(id) FROM menu;`)
+	// if err != nil {
+	// 	log.Println(err)
+	// 	return nil, err
+	// }
+
+	// err = resultTotalItem.Scan()
+	// if err != nil {
+	// 	return nil, errors.New("Menu ID Not Found")
+	// }
+
 	return &AllMenu, nil
 }
 
