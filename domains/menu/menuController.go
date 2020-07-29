@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"warung_makan_gerin/utils/message"
 	"warung_makan_gerin/utils/tools"
+
+	"github.com/gorilla/mux"
 )
 
 type Controller struct {
@@ -21,12 +23,12 @@ func (s *Controller) HandleGETAllMenus() func(w http.ResponseWriter, r *http.Req
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
-		var page string = tools.GetPathVar("page", r)
-		var limit string = tools.GetPathVar("limit", r)
-		var status string = tools.GetPathVar("status", r)
-		var orderBy string = tools.GetPathVar("orderBy", r)
-		var sort string = tools.GetPathVar("sort", r)
-		var keyword string = tools.GetPathVar("keyword", r)
+		var page string = mux.Vars(r)["page"]
+		var limit string = mux.Vars(r)["limit"]
+		var status string = mux.Vars(r)["status"]
+		var orderBy string = mux.Vars(r)["orderBy"]
+		var sort string = mux.Vars(r)["sort"]
+		var keyword string = mux.Vars(r)["keyword"]
 
 		Menus, err := s.MenuService.GetMenus(keyword, page, limit, status, orderBy, sort)
 		if err != nil {

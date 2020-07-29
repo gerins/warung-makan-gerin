@@ -1,5 +1,7 @@
 package menu
 
+type Menus []Menu
+
 // Menu Struct
 type Menu struct {
 	ID       string `json:"id"`
@@ -14,6 +16,6 @@ type Menu struct {
 
 // TotalMenu Struct
 type TotalMenu struct {
-	TotalItem int    `json:"totalitem"`
-	Menu      []Menu `json:"menu"`
+	TotalItem int   `json:"totalitem"`
+	Menu      Menus `json:"menu"`
 }

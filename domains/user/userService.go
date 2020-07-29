@@ -51,7 +51,7 @@ func (s UserService) HandleUserLogin(userLogin User) (*TokenUser, error) {
 		return nil, errors.New("Username atau Password salah")
 	}
 
-	getToken := token.GenerateToken(User.Username, 600)
+	getToken := token.GenerateToken(User.Username, 3600)
 	userWithToken := TokenUser{getToken, *User}
 
 	return &userWithToken, nil

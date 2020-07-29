@@ -13,7 +13,7 @@ type MenuRepo struct {
 }
 
 type MenuRepository interface {
-	HandleGETAllMenu(keyword, offset, limit, status, orderBy, sort string) (*[]Menu, error)
+	HandleGETAllMenu(keyword, page, limit, status, orderBy, sort string) (*TotalMenu, error)
 	HandleGETMenu(id, status string) (*Menu, error)
 	HandlePOSTMenu(d Menu) (*Menu, error)
 	HandleUPDATEMenu(id string, data Menu) (*Menu, error)
@@ -25,17 +25,17 @@ func NewMenuRepo(db *sql.DB) MenuRepository {
 }
 
 // HandleGETAllMenu for GET all data from Menu
-func (p MenuRepo) HandleGETAllMenu(keyword, offset, limit, status, orderBy, sort string) (*[]Menu, error) {
+func (p MenuRepo) HandleGETAllMenu(keyword, page, limit, status, orderBy, sort string) (*TotalMenu, error) {
 	var d Menu
 	var AllMenu []Menu
+	var countItem int
 
-	queryInput := fmt.Sprintf("SELECT * FROM menu_idx WHERE status=? AND (nama LIKE ? OR jenis LIKE ?) ORDER BY %s %s LIMIT %s,%s", orderBy, sort, offset, limit)
+	queryInput := fmt.Sprintf("SELECT * FROM menu_idx WHERE status=? AND (nama LIKE ? OR jenis LIKE ?) ORDER BY %s %s LIMIT %s,%s", orderBy, sort, page, limit)
 	result, err := p.db.Query(queryInput, status, "%"+keyword+"%", "%"+keyword+"%")
 	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
-
 	for result.Next() {
 		err := result.Scan(&d.ID, &d.MenuName, &d.Harga, &d.Stock, &d.Category,
 			&d.Status, &d.Created, &d.Updated)
@@ -46,18 +46,18 @@ func (p MenuRepo) HandleGETAllMenu(keyword, offset, limit, status, orderBy, sort
 		AllMenu = append(AllMenu, d)
 	}
 
-	// resultTotalItem := p.db.QueryRow(`SELECT count(id) FROM menu;`)
-	// if err != nil {
-	// 	log.Println(err)
-	// 	return nil, err
-	// }
+	resultTotalItem := p.db.QueryRow(`SELECT count(id) FROM menu WHERE status=?`, status)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	err = resultTotalItem.Scan(&countItem)
+	if err != nil {
+		return nil, errors.New("Counting All Menu Failed")
+	}
 
-	// err = resultTotalItem.Scan()
-	// if err != nil {
-	// 	return nil, errors.New("Menu ID Not Found")
-	// }
-
-	return &AllMenu, nil
+	listMenusWithTotalItem := TotalMenu{countItem, AllMenu}
+	return &listMenusWithTotalItem, nil
 }
 
 // HandleGETMenu for GET single data from Menu
