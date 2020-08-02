@@ -1,8 +1,8 @@
-http://localhost:8080/menus				            (GET)		// View All menus availalble
-http://localhost:8080/menus/(inputProductID)		(GET)		// View Single menu availalble
-http://localhost:8080/menus				            (POST)		// Add new menu
-http://localhost:8080/menus/(inputProductID)		(PUT)		// Update availalble menu
-http://localhost:8080/menus/(inputProductID)		(DELETE)	// Delete availalble menu
+http://localhost:8080/menu				            (GET)		// View All menu availalble
+http://localhost:8080/menu/(inputProductID)		(GET)		// View Single menu availalble
+http://localhost:8080/menu				            (POST)		// Add new menu
+http://localhost:8080/menu/(inputProductID)		(PUT)		// Update availalble menu
+http://localhost:8080/menu/(inputProductID)		(DELETE)	// Delete availalble menu
 
 Format untuk POST dan PUT products
 {
@@ -13,11 +13,11 @@ Format untuk POST dan PUT products
  }
 
 
-http://localhost:8080/categorymenus				            (GET)		// View All categorymenus availalble
-http://localhost:8080/categorymenus/(inputcategorymenusID)	(GET)		// View Single categorymenu availalble
-http://localhost:8080/categorymenus			            	(POST)		// Add new categorymenu
-http://localhost:8080/categorymenus/(inputcategorymenusID)	(PUT)		// Update availalble categorymenu
-http://localhost:8080/categorymenus/(inputcategorymenusID)	(DELETE) 	// Delete availalble categorymenu
+http://localhost:8080/kategorimenu				            (GET)		// View All kategorimenu availalble
+http://localhost:8080/kategorimenu/(inputkategorimenuID)	(GET)		// View Single categorymenu availalble
+http://localhost:8080/kategorimenu			            	(POST)		// Add new categorymenu
+http://localhost:8080/kategorimenu/(inputkategorimenuID)	(PUT)		// Update availalble categorymenu
+http://localhost:8080/kategorimenu/(inputkategorimenuID)	(DELETE) 	// Delete availalble categorymenu
 
 Format untuk POST dan PUT category
 {

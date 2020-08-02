@@ -5,6 +5,9 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+-- -----------------------------------------------------
 -- Schema warung_makan_gerin
 -- -----------------------------------------------------
 
@@ -25,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `warung_makan_gerin`.`category_menu` (
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 5
+AUTO_INCREMENT = 9
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -41,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `warung_makan_gerin`.`daftar_transaksi` (
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 22
+AUTO_INCREMENT = 29
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -51,7 +54,7 @@ DEFAULT CHARACTER SET = utf8;
 CREATE TABLE IF NOT EXISTS `warung_makan_gerin`.`menu` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `nama` VARCHAR(45) NOT NULL,
-  `harga` VARCHAR(45) NOT NULL,
+  `harga` INT NOT NULL,
   `stock` INT NOT NULL DEFAULT '0',
   `category_menu_id` INT NOT NULL DEFAULT '1',
   `status` VARCHAR(5) NOT NULL DEFAULT 'A',
@@ -63,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `warung_makan_gerin`.`menu` (
     FOREIGN KEY (`category_menu_id`)
     REFERENCES `warung_makan_gerin`.`category_menu` (`id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 6
+AUTO_INCREMENT = 90
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -90,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `warung_makan_gerin`.`detail_transaksi` (
     FOREIGN KEY (`menu_id`)
     REFERENCES `warung_makan_gerin`.`menu` (`id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 37
+AUTO_INCREMENT = 51
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -105,7 +108,9 @@ CREATE TABLE IF NOT EXISTS `warung_makan_gerin`.`user` (
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+AUTO_INCREMENT = 13
+DEFAULT CHARACTER SET = utf8;
 
 USE `warung_makan_gerin` ;
 
