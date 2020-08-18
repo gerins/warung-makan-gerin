@@ -51,6 +51,6 @@ func ConnectDB() (db *sql.DB) {
 		fmt.Scanln()
 		log.Fatal(err)
 	}
-	fmt.Println("DataBase Successfully Connected")
+	log.Println("DataBase Successfully Connected")
 	return db
 }

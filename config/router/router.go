@@ -2,7 +2,6 @@ package router
 
 import (
 	"bufio"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -21,7 +20,7 @@ var serverHost, serverPort string
 // StartServer routing
 func StartServer(r *mux.Router) {
 	configServer()
-	fmt.Println("Server Start at Port : " + serverPort)
+	log.Println("Server Start at Port : " + serverPort)
 	http.ListenAndServe(serverHost+":"+serverPort, r)
 }
 

@@ -3,6 +3,7 @@ package menu
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"log"
 	"strconv"
 )
@@ -12,7 +13,7 @@ type MenuRepo struct {
 }
 
 type MenuRepository interface {
-	HandleGETAllMenu() (*[]Menu, error)
+	HandleGETAllMenu(keyword, page, limit, status, orderBy, sort string) (*TotalMenu, error)
 	HandleGETMenu(id, status string) (*Menu, error)
 	HandlePOSTMenu(d Menu) (*Menu, error)
 	HandleUPDATEMenu(id string, data Menu) (*Menu, error)
@@ -24,16 +25,17 @@ func NewMenuRepo(db *sql.DB) MenuRepository {
 }
 
 // HandleGETAllMenu for GET all data from Menu
-func (p MenuRepo) HandleGETAllMenu() (*[]Menu, error) {
+func (p MenuRepo) HandleGETAllMenu(keyword, page, limit, status, orderBy, sort string) (*TotalMenu, error) {
 	var d Menu
 	var AllMenu []Menu
+	var countItem int
 
-	result, err := p.db.Query("SELECT * FROM menu_idx WHERE status=?", "A")
+	queryInput := fmt.Sprintf("SELECT * FROM menu_idx WHERE status=? AND (nama LIKE ? OR jenis LIKE ?) ORDER BY %s %s LIMIT %s,%s", orderBy, sort, page, limit)
+	result, err := p.db.Query(queryInput, status, "%"+keyword+"%", "%"+keyword+"%")
 	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
-
 	for result.Next() {
 		err := result.Scan(&d.ID, &d.MenuName, &d.Harga, &d.Stock, &d.Category,
 			&d.Status, &d.Created, &d.Updated)
@@ -43,7 +45,19 @@ func (p MenuRepo) HandleGETAllMenu() (*[]Menu, error) {
 		}
 		AllMenu = append(AllMenu, d)
 	}
-	return &AllMenu, nil
+
+	resultTotalItem := p.db.QueryRow(`SELECT count(id) FROM menu WHERE status=?`, status)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	err = resultTotalItem.Scan(&countItem)
+	if err != nil {
+		return nil, errors.New("Counting All Menu Failed")
+	}
+
+	listMenusWithTotalItem := TotalMenu{countItem, AllMenu}
+	return &listMenusWithTotalItem, nil
 }
 
 // HandleGETMenu for GET single data from Menu
@@ -91,8 +105,8 @@ func (p MenuRepo) HandleUPDATEMenu(id string, data Menu) (*Menu, error) {
 		return nil, err
 	}
 
-	_, err = tx.Exec(`UPDATE menu SET nama=?, harga=?,stock=?,category_menu_id=? WHERE id=?`,
-		data.MenuName, data.Harga, data.Stock, data.Category, id)
+	_, err = tx.Exec(`UPDATE menu SET nama=?, harga=?,stock=? WHERE id=?`,
+		data.MenuName, data.Harga, data.Stock, id)
 
 	if err != nil {
 		log.Println(err)

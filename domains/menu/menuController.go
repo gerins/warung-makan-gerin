@@ -3,9 +3,15 @@ package menu
 import (
 	"database/sql"
 	"encoding/json"
+	"log"
 	"net/http"
+	"os"
+	"path/filepath"
+	"strconv"
 	"warung_makan_gerin/utils/message"
 	"warung_makan_gerin/utils/tools"
+
+	"github.com/gorilla/mux"
 )
 
 type Controller struct {
@@ -20,7 +26,14 @@ func (s *Controller) HandleGETAllMenus() func(w http.ResponseWriter, r *http.Req
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
-		Menus, err := s.MenuService.GetMenus()
+		var page string = mux.Vars(r)["page"]
+		var limit string = mux.Vars(r)["limit"]
+		var status string = mux.Vars(r)["status"]
+		var orderBy string = mux.Vars(r)["orderBy"]
+		var sort string = mux.Vars(r)["sort"]
+		var keyword string = mux.Vars(r)["keyword"]
+
+		Menus, err := s.MenuService.GetMenus(keyword, page, limit, status, orderBy, sort)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(message.Respone("Search All Failed", http.StatusBadRequest, err.Error()))
@@ -50,15 +63,32 @@ func (s *Controller) HandlePOSTMenus() func(w http.ResponseWriter, r *http.Reque
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
-		var data Menu
-		tools.Parser(r, &data)
+		r.ParseMultipartForm(1024)
+		uploadedFile, handler, err := r.FormFile("file")
+		if err != nil {
+			log.Println(`Error while parsing file`, err)
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(message.Respone("Upload Photos Failed", http.StatusInternalServerError, err.Error()))
+			return
+		}
+		defer uploadedFile.Close()
 
-		result, err := s.MenuService.HandlePOSTMenu(data)
+		var data Menu
+		data.MenuName = r.FormValue("menuname")
+		data.Category = r.FormValue("category")
+		harga, _ := strconv.Atoi(r.FormValue("harga"))
+		stock, _ := strconv.Atoi(r.FormValue("stock"))
+		data.Harga = harga
+		data.Stock = stock
+		identifyUser, _ := r.Cookie("user")
+
+		result, err := s.MenuService.HandlePOSTMenu(data, identifyUser.Value, uploadedFile, handler)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(message.Respone("Posting Failed", http.StatusBadRequest, err.Error()))
 			return
 		}
+
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(message.Respone("Posting Success", http.StatusOK, result))
 	}
@@ -93,5 +123,21 @@ func (s *Controller) HandleDELETEMenus() func(w http.ResponseWriter, r *http.Req
 		}
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(message.Respone("Delete By ID Success", http.StatusOK, result))
+	}
+}
+
+func (s *Controller) HandleGetImages() func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		dir, err := os.Getwd()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		fileId := tools.GetPathVar("id", r)
+		fileLocation := filepath.Join(dir, "files", fileId)
+
+		w.Header().Set("Content-Type", "image/jpeg")
+		http.ServeFile(w, r, fileLocation)
 	}
 }
