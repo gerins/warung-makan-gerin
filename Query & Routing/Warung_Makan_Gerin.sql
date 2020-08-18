@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `warung_makan_gerin`.`menu` (
     FOREIGN KEY (`category_menu_id`)
     REFERENCES `warung_makan_gerin`.`category_menu` (`id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 90
+AUTO_INCREMENT = 96
 DEFAULT CHARACTER SET = utf8;
 
 
