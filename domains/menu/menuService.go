@@ -33,6 +33,8 @@ func NewMenuService(db *sql.DB) MenuServiceInterface {
 }
 
 func (s MenuService) GetMenus(keyword, page, limit, status, orderBy, sort string) (*TotalMenu, error) {
+	// var pageOffset = (page * limit) - limit
+
 	Menu, err := s.MenuRepo.HandleGETAllMenu(keyword, page, limit, status, orderBy, sort)
 	if err != nil {
 		return nil, err

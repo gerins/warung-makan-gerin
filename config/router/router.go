@@ -20,7 +20,7 @@ var serverHost, serverPort string
 // StartServer routing
 func StartServer(r *mux.Router) {
 	configServer()
-	log.Println("Server Start at Port : " + serverPort)
+	log.Println("Server Start at http://" + serverHost + ":" + serverPort)
 	http.ListenAndServe(serverHost+":"+serverPort, r)
 }
 

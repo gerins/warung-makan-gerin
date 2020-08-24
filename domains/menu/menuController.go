@@ -78,6 +78,7 @@ func (s *Controller) HandlePOSTMenus() func(w http.ResponseWriter, r *http.Reque
 		data.Category = r.FormValue("category")
 		harga, _ := strconv.Atoi(r.FormValue("harga"))
 		stock, _ := strconv.Atoi(r.FormValue("stock"))
+
 		data.Harga = harga
 		data.Stock = stock
 		identifyUser, _ := r.Cookie("user")
