@@ -14,7 +14,7 @@ import (
 
 const (
 	MENUS_MAIN_ROUTE       = "/menu"
-	CATEGORY_MAIN_ROUTE    = "/categorymenus"
+	CATEGORY_MAIN_ROUTE    = "/kategorimenu"
 	TRANSACTION_MAIN_ROUTE = "/transaction"
 	USER_MAIN_ROUTE        = "/user"
 )
