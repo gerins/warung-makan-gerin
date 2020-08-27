@@ -64,7 +64,10 @@ func (s *Controller) HandlePOSTMenus() func(w http.ResponseWriter, r *http.Reque
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
-		r.ParseMultipartForm(1024)
+		// ini syntax untuk dapetin file nya, uploadedFile itu file nya, handler itu untuk dapetin .jpg file nya
+		// di postman pilih POST -> BODY -> Form-data -> key nya file dan value nya adalah file itu sendiri
+		//////////////////////////////////////////////////////////////////////////////////////////
+		r.ParseMultipartForm(1024) // ini untuk batesin file size nya biar maks 1 MB
 		uploadedFile, handler, err := r.FormFile("file")
 		if err != nil {
 			log.Println(`Error while parsing file`, err)
@@ -73,6 +76,7 @@ func (s *Controller) HandlePOSTMenus() func(w http.ResponseWriter, r *http.Reque
 			return
 		}
 		defer uploadedFile.Close()
+		//////////////////////////////////////////////////////////////////////////////////////////
 
 		var data Menu
 		data.MenuName = r.FormValue("menuname")
@@ -88,6 +92,7 @@ func (s *Controller) HandlePOSTMenus() func(w http.ResponseWriter, r *http.Reque
 		fmt.Println(data)
 		fmt.Println(handler.Filename)
 
+		// LANJUT ke service untuk di proses
 		result, err := s.MenuService.HandlePOSTMenu(data, identifyUser, uploadedFile, handler)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
@@ -132,6 +137,7 @@ func (s *Controller) HandleDELETEMenus() func(w http.ResponseWriter, r *http.Req
 	}
 }
 
+// Ini function untuk serve yang ada di harddisk, function ini di panggil di file menuRoute.go
 func (s *Controller) HandleGetImages() func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		dir, err := os.Getwd()
