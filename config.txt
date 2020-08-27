@@ -4,5 +4,5 @@ dbPass=admin
 dbHost=localhost
 dbPort=3306
 dbName=warung_makan_gerin
-serverHost=192.168.43.46
+serverHost=localhost
 serverPort=8080

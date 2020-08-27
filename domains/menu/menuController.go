@@ -3,6 +3,7 @@ package menu
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -81,9 +82,13 @@ func (s *Controller) HandlePOSTMenus() func(w http.ResponseWriter, r *http.Reque
 
 		data.Harga = harga
 		data.Stock = stock
-		identifyUser, _ := r.Cookie("user")
+		// identifyUser, _ := r.Cookie("user")
+		identifyUser := "Gerin"
 
-		result, err := s.MenuService.HandlePOSTMenu(data, identifyUser.Value, uploadedFile, handler)
+		fmt.Println(data)
+		fmt.Println(handler.Filename)
+
+		result, err := s.MenuService.HandlePOSTMenu(data, identifyUser, uploadedFile, handler)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(message.Respone("Posting Failed", http.StatusBadRequest, err.Error()))
