@@ -10,8 +10,7 @@
 5. Untuk post gambar, Route nya POST http://localhost:8080/menu 
 6. Buka Postman -> Pilih Method POST abis itu paste link nya -> Pilih Body -> form-data -> 
 7. isi key nya file (key nya wajib file biar bisa dibongkar di backend) -> value nya ya file nya itu
-https://github.com/gerins/warung-makan-gerin/blob/master/domains/menu/menuController.go
-liat line 71, syntax bongkar file nya
+8. https://github.com/gerins/warung-makan-gerin/blob/master/domains/menu/menuController.go liat line 71, syntax untuk ambil file nya
 
 Sisa route nya liat di file Routing.txt di Folder Query & Routing
 *Kalo mau post menu harus post kategori menu dulu
